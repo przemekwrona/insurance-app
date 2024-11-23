@@ -4,6 +4,26 @@ info:
   description: Insurance App API
   version: 1.0.0
 paths:
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create new user in system with defined amount of many in PLN
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+
   /cantor/exchange:
     post:
       tags:
