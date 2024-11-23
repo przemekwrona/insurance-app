@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-table-users
+      author: pwrona
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: name
+                  type: varchar(50)
+              - column:
+                  name: surname
+                  type: varchar(50)
