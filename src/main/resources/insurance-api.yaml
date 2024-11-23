@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Insurance App API
+  description: Insurance App API
+  version: 1.0.0
+paths:
+  /cantor/exchange:
+    post:
+      tags:
+        - exchange
+      summary: Exchange
+      operationId: exchange
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeRequest"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeResponse'
+
+components:
+  schemas:
+    ExchangeRequest:
+      type: object
+      properties:
+        sourceCurrencyCode:
+          type: string
+        targetCurrencyCode:
+          type: string
+        amount:
+          type: number
+
+    ExchangeResponse:
+      type: object
+      properties:
+        sourceCurrencyCode:
+          type: string
+        targetCurrencyCode:
+          type: string
+        sourceAmount:
+          type: number
+        targetAmount:
+          type: string
