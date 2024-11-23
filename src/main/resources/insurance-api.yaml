@@ -46,6 +46,22 @@ paths:
 
 components:
   schemas:
+    CreateUserRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        amount:
+          type: number
+
+    CreateUserResponse:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+
     ExchangeRequest:
       type: object
       properties:
