@@ -46,4 +46,4 @@ components:
         sourceAmount:
           type: number
         targetAmount:
-          type: string
+          type: number
