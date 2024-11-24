@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wrona.insurance.BusinessException;
+import pl.wrona.insurance.DateProvider;
 import pl.wrona.insurance.account.SubAccountService;
 import pl.wrona.insurance.api.model.ExchangeMoneyAccountStatus;
 import pl.wrona.insurance.api.model.ExchangeMoneyRequest;
@@ -29,10 +30,10 @@ public class ExchangeService {
 
     private final NbpCantorService nbpCantorService;
     private final SubAccountService subAccountService;
+    private final DateProvider dateProvider;
 
     public ExchangeResponse exchange(ExchangeRequest exchangeRequest) {
-        LocalDate exchangeDate = LocalDate.now().minusDays(3L);
-        return exchange(exchangeRequest, exchangeDate);
+        return exchange(exchangeRequest, dateProvider.now());
     }
 
     public ExchangeResponse exchange(ExchangeRequest exchangeRequest, LocalDate exchangeDate) {
@@ -92,7 +93,7 @@ public class ExchangeService {
                 .targetCurrencyCode(exchangeMoneyRequest.getTargetCurrencyCode())
                 .amount(exchangeMoneyRequest.getAmount());
 
-        ExchangeResponse exchangeResponse = exchange(exchangeRequest, LocalDate.now().minusDays(3L));
+        ExchangeResponse exchangeResponse = exchange(exchangeRequest, dateProvider.now());
 
         sourceSubAccount.setAmount(sourceSubAccount.getAmount().subtract(exchangeMoneyRequest.getAmount()).setScale(2, RoundingMode.HALF_UP));
         targetSubAccount.setAmount(targetSubAccount.getAmount().add(exchangeResponse.getTargetAmount()).setScale(2, RoundingMode.HALF_UP));
