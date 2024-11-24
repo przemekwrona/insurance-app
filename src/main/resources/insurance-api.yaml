@@ -24,6 +24,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
 
+  /account/{accountNumber}/exchange:
+    post:
+      tags:
+        - exchange
+      summary: Exchange money
+      operationId: exchangeMoney
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Currency code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExchangeMoneyRequest"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeMoneyResponse'
+
   /cantor/exchange:
     post:
       tags:
@@ -62,6 +90,29 @@ components:
         accountNumber:
           type: string
           format: uuid
+
+    ExchangeMoneyRequest:
+      type: object
+      properties:
+        sourceCurrencyCode:
+          type: string
+        targetCurrencyCode:
+          type: string
+        amount:
+          type: number
+
+    ExchangeMoneyResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        sourceCurrencyCode:
+          type: string
+        targetCurrencyCode:
+          type: string
+        amount:
+          type: number
 
     ExchangeRequest:
       type: object

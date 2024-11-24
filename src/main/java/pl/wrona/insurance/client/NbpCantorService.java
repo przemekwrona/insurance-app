@@ -1,4 +1,4 @@
-package pl.wrona.insurance.exchange;
+package pl.wrona.insurance.client;
 
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;

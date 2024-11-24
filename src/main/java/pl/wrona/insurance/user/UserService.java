@@ -3,13 +3,13 @@ package pl.wrona.insurance.user;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.wrona.insurance.account.AccountRepository;
 import pl.wrona.insurance.api.model.CreateUserRequest;
 import pl.wrona.insurance.api.model.CreateUserResponse;
-import pl.wrona.insurance.entities.Account;
-import pl.wrona.insurance.entities.CurrencyCode;
-import pl.wrona.insurance.entities.SubAccount;
-import pl.wrona.insurance.entities.SubAccountId;
-import pl.wrona.insurance.entities.AppUser;
+import pl.wrona.insurance.account.Account;
+import pl.wrona.insurance.account.CurrencyCode;
+import pl.wrona.insurance.account.SubAccount;
+import pl.wrona.insurance.account.SubAccountId;
 
 import java.math.BigDecimal;
 import java.util.HashSet;

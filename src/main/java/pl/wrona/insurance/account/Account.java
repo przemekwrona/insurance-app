@@ -1,4 +1,4 @@
-package pl.wrona.insurance.entities;
+package pl.wrona.insurance.account;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.wrona.insurance.user.AppUser;
 
 import java.util.Set;
 import java.util.UUID;

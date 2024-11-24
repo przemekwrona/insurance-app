@@ -1,4 +1,4 @@
-package pl.wrona.insurance.entities;
+package pl.wrona.insurance.account;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

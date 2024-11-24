@@ -1,4 +1,4 @@
-package pl.wrona.insurance.entities;
+package pl.wrona.insurance.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.wrona.insurance.account.Account;
 
 import java.util.Set;
 

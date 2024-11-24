@@ -1,4 +1,4 @@
-package pl.wrona.insurance.entities;
+package pl.wrona.insurance.account;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
