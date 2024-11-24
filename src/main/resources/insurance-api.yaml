@@ -24,6 +24,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
 
+
+  /accounts/{accountNumber}:
+    get:
+      tags:
+        - account
+      summary: Get account details
+      operationId: findAccountById
+      parameters:
+        - name: accountNumber
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Account number
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetailsResponse'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /accounts/{accountNumber}/exchange:
     post:
       tags:
@@ -37,7 +66,7 @@ paths:
           schema:
             type: string
             format: uuid
-          description: Currency code
+          description: Account number
       requestBody:
         required: true
         content:
@@ -147,6 +176,37 @@ components:
           type: number
         targetAmount:
           type: number
+
+    SubAccountStatus:
+      type: object
+      properties:
+        currencyCode:
+          type: string
+        amount:
+          type: number
+          format: currency
+
+    AccountOwner:
+      type: object
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+
+    AccountDetailsResponse:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+          format: number
+        owner:
+          $ref: '#/components/schemas/AccountOwner'
+
+        subAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubAccountStatus'
 
     Error:
       type: object
