@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.wrona.insurance.BusinessException;
 import pl.wrona.insurance.account.SubAccountService;
+import pl.wrona.insurance.api.model.ExchangeMoneyAccountStatus;
 import pl.wrona.insurance.api.model.ExchangeMoneyRequest;
 import pl.wrona.insurance.api.model.ExchangeMoneyResponse;
 import pl.wrona.insurance.api.model.ExchangeRequest;
@@ -93,13 +94,19 @@ public class ExchangeService {
 
         ExchangeResponse exchangeResponse = exchange(exchangeRequest, LocalDate.now().minusDays(3L));
 
-        sourceSubAccount.setAmount(sourceSubAccount.getAmount().subtract(exchangeMoneyRequest.getAmount()));
-        targetSubAccount.setAmount(targetSubAccount.getAmount().add(exchangeResponse.getTargetAmount()));
+        sourceSubAccount.setAmount(sourceSubAccount.getAmount().subtract(exchangeMoneyRequest.getAmount()).setScale(2, RoundingMode.HALF_UP));
+        targetSubAccount.setAmount(targetSubAccount.getAmount().add(exchangeResponse.getTargetAmount()).setScale(2, RoundingMode.HALF_UP));
 
         SubAccount savedSourceSubAccount = subAccountService.save(sourceSubAccount);
         SubAccount savedTargetSubAccount = subAccountService.save(targetSubAccount);
 
         return new ExchangeMoneyResponse()
-                .accountId(accountId);
+                .accountId(accountId)
+                .addAccountsItem(new ExchangeMoneyAccountStatus()
+                        .currencyCode(savedSourceSubAccount.getSubAccountId().getCurrencyCode().name())
+                        .amount(savedSourceSubAccount.getAmount().setScale(2, RoundingMode.HALF_UP)))
+                .addAccountsItem(new ExchangeMoneyAccountStatus()
+                        .currencyCode(savedTargetSubAccount.getSubAccountId().getCurrencyCode().name())
+                        .amount(savedTargetSubAccount.getAmount().setScale(2, RoundingMode.HALF_UP)));
     }
 }

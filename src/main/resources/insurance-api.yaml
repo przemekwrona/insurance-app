@@ -107,18 +107,24 @@ components:
         amount:
           type: number
 
+    ExchangeMoneyAccountStatus:
+      type: object
+      properties:
+        currencyCode:
+          type: string
+        amount:
+          type: number
+
     ExchangeMoneyResponse:
       type: object
       properties:
         accountId:
           type: string
           format: uuid
-        sourceCurrencyCode:
-          type: string
-        targetCurrencyCode:
-          type: string
-        amount:
-          type: number
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExchangeMoneyAccountStatus'
 
     ExchangeRequest:
       type: object
