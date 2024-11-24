@@ -3,8 +3,14 @@ databaseChangeLog:
       id: create-user
       author: pwrona
       changes:
+        - createSequence:
+            sequenceName: app_user_id_seq
+            startValue: 1
+            incrementBy: 1
+
         - createTable:
-            tableName: user
+            tableName: app_user
+            defaultValueSequenceNext: app_user_id_seq
             columns:
               - column:
                   name: user_id
@@ -13,7 +19,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: name
+                  name: firstname
                   type: varchar(50)
                   constraints:
                     nullable: false
@@ -42,7 +48,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     foreignKeyName: fk_user_account
-                    references: user(user_id)
+                    references: app_user(user_id)
 
   - changeSet:
       id: create-sub-account
@@ -52,23 +58,21 @@ databaseChangeLog:
             tableName: sub_account
             columns:
               - column:
+                  name: account_number
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    foreignKeyName: fk_account_sub_account
+                    references: account(account_number)
+              - column:
                   name: currency_code
                   type: varchar(4)
                   constraints:
+                    primaryKey: true
                     nullable: false
               - column:
                   name: amount
                   type: currency
                   constraints:
                     nullable: false
-              - column:
-                  name: account_number
-                  type: uuid
-                  constraints:
-                    nullable: false
-                    foreignKeyName: fk_account_sub_account
-                    references: account(account_number)
-            tableConstraints:
-              - primaryKey:
-                  columnNames: account_number, currency_code
-                  constraintName: pk_sub_account
