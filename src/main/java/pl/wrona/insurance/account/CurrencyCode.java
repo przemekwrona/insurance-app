@@ -1,5 +1,5 @@
 package pl.wrona.insurance.account;
 
 public enum CurrencyCode {
-    PLN, USD
+    PLN, USD, EUR, CAD, JPY, CNY;
 }

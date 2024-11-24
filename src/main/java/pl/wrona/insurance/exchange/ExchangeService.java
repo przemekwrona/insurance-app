@@ -1,8 +1,11 @@
 package pl.wrona.insurance.exchange;
 
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.wrona.insurance.BusinessException;
 import pl.wrona.insurance.account.SubAccountService;
 import pl.wrona.insurance.api.model.ExchangeMoneyRequest;
 import pl.wrona.insurance.api.model.ExchangeMoneyResponse;
@@ -15,6 +18,8 @@ import pl.wrona.insurance.client.NbpCantorService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,24 +44,46 @@ public class ExchangeService {
                 .targetAmount(exchangeRequest.getAmount().multiply(exchangeRate).setScale(2, RoundingMode.DOWN));
     }
 
+    @SneakyThrows
     @Transactional
     public ExchangeMoneyResponse exchangeMoney(UUID accountId, ExchangeMoneyRequest exchangeMoneyRequest) {
-        CurrencyCode sourceCurrencyCode = CurrencyCode.valueOf(exchangeMoneyRequest.getSourceCurrencyCode());
-        CurrencyCode targetCurrencyCode = CurrencyCode.valueOf(exchangeMoneyRequest.getTargetCurrencyCode());
+        List<String> errors = new ArrayList<>();
+
+        CurrencyCode sourceCurrencyCode = null;
+        try {
+            sourceCurrencyCode = CurrencyCode.valueOf(exchangeMoneyRequest.getSourceCurrencyCode());
+        } catch (IllegalArgumentException ex) {
+            errors.add("Sub account for currency %s is not supported".formatted(exchangeMoneyRequest.getSourceCurrencyCode()));
+        }
+
+        CurrencyCode targetCurrencyCode = null;
+        try {
+            targetCurrencyCode = CurrencyCode.valueOf(exchangeMoneyRequest.getTargetCurrencyCode());
+        } catch (IllegalArgumentException ex) {
+            errors.add("Sub account for currency %s is not supported".formatted(exchangeMoneyRequest.getTargetCurrencyCode()));
+        }
+
+        if (!errors.isEmpty()) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, errors);
+        }
 
         if (!subAccountService.hasSubAccount(accountId, sourceCurrencyCode)) {
-            return null;
+            errors.add("Account %s does not have assigned sub account for currency %s".formatted(accountId, exchangeMoneyRequest.getSourceCurrencyCode()));
         }
 
         if (!subAccountService.hasSubAccount(accountId, targetCurrencyCode)) {
-            return null;
+            errors.add("Account %s does not have assigned sub account for currency %s".formatted(accountId, exchangeMoneyRequest.getTargetCurrencyCode()));
+        }
+
+        if (!errors.isEmpty()) {
+            throw new BusinessException(HttpStatus.FORBIDDEN, errors);
         }
 
         SubAccount sourceSubAccount = subAccountService.findSubAccount(accountId, sourceCurrencyCode);
         SubAccount targetSubAccount = subAccountService.findSubAccount(accountId, targetCurrencyCode);
 
         if (sourceSubAccount.getAmount().compareTo(exchangeMoneyRequest.getAmount()) < 0) {
-            return null;
+            throw new BusinessException(HttpStatus.FORBIDDEN, "There are insufficient funds in account number %s maintained in %s.".formatted(accountId, sourceCurrencyCode));
         }
 
         ExchangeRequest exchangeRequest = new ExchangeRequest()
