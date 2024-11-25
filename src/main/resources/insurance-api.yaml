@@ -4,7 +4,7 @@ info:
   description: Insurance App API
   version: 1.0.0
 paths:
-  /user:
+  /users:
     post:
       tags:
         - user
