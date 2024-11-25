@@ -13,9 +13,6 @@ jobs:
         java-version: [ '17' ]
         os: [ 'ubuntu-22.04' ]
     runs-on: ${{ matrix.os }}
-    needs:
-      - codestyle
-      - lint
     steps:
       - uses: actions/checkout@v4
 
