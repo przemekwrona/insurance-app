@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.equalTo;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -65,6 +66,48 @@ class UserControllerIntegrationTest {
                 .statusCode(200)
                 .assertThat()
                 .body("accountNumber", notNullValue());
+    }
+
+    @Test
+    void shouldThrowErrorBecauseFirstnameIsRequired() {
+        with().contentType(ContentType.JSON)
+                .body(new CreateUserRequest()
+                        .surname("Kowalski")
+                        .amount(BigDecimal.valueOf(102.32)))
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(400)
+                .assertThat()
+                .body("detail", equalTo("Invalid request content."));
+    }
+
+    @Test
+    void shouldThrowErrorBecauseSurnameIsRequired() {
+        with().contentType(ContentType.JSON)
+                .body(new CreateUserRequest()
+                        .firstname("Jan")
+                        .amount(BigDecimal.valueOf(102.32)))
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(400)
+                .assertThat()
+                .body("detail", equalTo("Invalid request content."));
+    }
+
+    @Test
+    void shouldThrowErrorBecauseAmountIsRequired() {
+        with().contentType(ContentType.JSON)
+                .body(new CreateUserRequest()
+                        .firstname("Jan")
+                        .surname("Kowlaksi"))
+                .when()
+                .post("/api/v1/users")
+                .then()
+                .statusCode(400)
+                .assertThat()
+                .body("detail", equalTo("Invalid request content."));
     }
 
 }

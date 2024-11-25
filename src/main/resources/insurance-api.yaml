@@ -110,6 +110,10 @@ components:
   schemas:
     CreateUserRequest:
       type: object
+      required:
+        - firstname
+        - surname
+        - amount
       properties:
         firstname:
           type: string
