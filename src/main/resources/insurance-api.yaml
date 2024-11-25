@@ -24,7 +24,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateUserResponse'
 
-
   /accounts/{accountNumber}:
     get:
       tags:

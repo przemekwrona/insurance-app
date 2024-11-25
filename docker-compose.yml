@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  db:
+    image: 'postgres:17-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=welcome1
+      - POSTGRES_DB=insurance_db
+    ports:
+      - 5432:5432
+
+  web-server:
+    build:
+      dockerfile: Dockerfile
+    container_name: web-server
+    ports:
+      - '8080:8080'
+    environment:
+      PROFILE: dev-docker
+    depends_on:
+      - db
