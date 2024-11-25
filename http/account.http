@@ -1,16 +1,16 @@
 ### Create new user account with init amount of many in PLN currecy
-POST http://localhost:8080/api/v1/user
+POST http://localhost:8080/api/v1/users
 Accept: application/json
 Content-Type: application/json
 
 {
-  "name": "Jan",
+  "firstname": "Jan",
   "surname": "Kowalski",
   "amount": 1500.00
 }
 
-###
-POST http://localhost:8080/api/v1/account/{account_id}/exchange
+### Exchange money form PLN -> USD
+POST http://localhost:8080/api/v1/accounts/{account_id}/exchange
 Accept: application/json
 Content-Type: application/json
 
@@ -19,3 +19,8 @@ Content-Type: application/json
   "targetCurrencyCode": "USD",
   "amount": 10.00
 }
+
+### Returns account details
+GET http://localhost:8080/api/v1/accounts/{account_id}
+Accept: application/json
+Content-Type: application/json
