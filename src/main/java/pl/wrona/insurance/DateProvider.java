@@ -8,6 +8,6 @@ import java.time.LocalDate;
 public class DateProvider {
 
     public LocalDate now() {
-        return LocalDate.now().minusDays(3L);
+        return LocalDate.now();
     }
 }

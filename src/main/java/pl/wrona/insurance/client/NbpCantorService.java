@@ -2,8 +2,9 @@ package pl.wrona.insurance.client;
 
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import pl.wrona.insurance.client.NbpClient;
+import pl.wrona.insurance.BusinessException;
 import pl.wrona.nbp.api.model.NbpExchangeRates;
 import pl.wrona.nbp.api.model.NbpExchangeResponse;
 
@@ -38,19 +39,19 @@ public class NbpCantorService {
         return nbpClient.exchangeRatesByDay(currencyCode, exchangeDate, DEFAULT_NBP_RESPONSE_FORMAT).getBody();
     }
 
-    public BigDecimal getExchangeRates(String sellCurrencyCode, String buyCurrencyCode, LocalDate exchangeDate) {
+    public BigDecimal getExchangeRates(String sellCurrencyCode, String buyCurrencyCode, LocalDate exchangeDate) throws BusinessException {
         NbpExchangeResponse sellCurrencyRate = exchangeRates(sellCurrencyCode, exchangeDate);
         NbpExchangeResponse buyCurrencyResponse = exchangeRates(buyCurrencyCode, exchangeDate);
 
         BigDecimal sellExchangeRate = sellCurrencyRate.getRates().stream()
                 .findFirst()
                 .map(NbpExchangeRates::getAsk)
-                .orElseThrow();
+                .orElseThrow(() -> new BusinessException(HttpStatus.SERVICE_UNAVAILABLE, "No exchange rate was found for the %s currency on %s.".formatted(sellCurrencyCode, exchangeDate)));
 
         BigDecimal buyExchangeRate = buyCurrencyResponse.getRates().stream()
                 .findFirst()
                 .map(NbpExchangeRates::getBid)
-                .orElseThrow();
+                .orElseThrow(() -> new BusinessException(HttpStatus.SERVICE_UNAVAILABLE, "No exchange rate was found for the %s currency on %s.".formatted(sellCurrencyCode, exchangeDate)));
 
         return sellExchangeRate.divide(buyExchangeRate, 5, RoundingMode.HALF_UP);
     }

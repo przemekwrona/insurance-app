@@ -36,6 +36,7 @@ public class ExchangeService {
         return exchange(exchangeRequest, dateProvider.now());
     }
 
+    @SneakyThrows
     public ExchangeResponse exchange(ExchangeRequest exchangeRequest, LocalDate exchangeDate) {
         BigDecimal exchangeRate = nbpCantorService.getExchangeRates(exchangeRequest.getSourceCurrencyCode(), exchangeRequest.getTargetCurrencyCode(), exchangeDate);
 
